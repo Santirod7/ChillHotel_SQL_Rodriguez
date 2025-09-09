@@ -1,5 +1,5 @@
-CREATE SCHEMA IF NOT EXISTS `chill_hotel` DEFAULT CHARACTER SET utf8 ;
-USE `chill_hotel` ;
+CREATE SCHEMA IF NOT EXISTS `Chill_Hotel` DEFAULT CHARACTER SET utf8 ;
+USE `Chill_Hotel` ;
 
 CREATE TABLE IF NOT EXISTS Cliente_registrado (
   	id_Cliente INT PRIMARY KEY AUTO_INCREMENT,
@@ -22,9 +22,6 @@ CREATE TABLE IF NOT EXISTS Clases_Habitaciones (
   Comodidades TEXT DEFAULT NULL,
   Precio_base DECIMAL(10, 2) NOT NULL);
 
-
-
-
 CREATE TABLE Habitaciones (
     id_Habitacion INT PRIMARY KEY AUTO_INCREMENT,
     Numero_Habitacion VARCHAR(10) NOT NULL UNIQUE,
@@ -32,7 +29,8 @@ CREATE TABLE Habitaciones (
     Estado VARCHAR(50) DEFAULT 'Disponible', 
     FOREIGN KEY (Id_Clase_Habitacion) REFERENCES Clases_Habitaciones(idClases_habitaciones)
 );
-select * from Habitaciones;
+
+select * from habitaciones;
 
 CREATE TABLE IF NOT EXISTS Reserva_habitaciones (
   id_reserva INT PRIMARY KEY NOT NULL AUTO_INCREMENT,
@@ -64,10 +62,10 @@ CREATE TABLE Productos_servicioHabitacion (
     Descripcion TEXT,
     Precio_Venta DECIMAL(10, 2) NOT NULL,
     Stock INT DEFAULT 0,
-    Categoria VARCHAR(25) 
+    Categoria VARCHAR(25) -- Ej: 'Comidas', 'Bebidas', 'Snacks', 'Artículos Personales'
 );
 
-CREATE VIEW v_habitaciones_ocupadas AS
+CREATE VIEW v_habitaciones_reservadas AS
 SELECT
 	CONCAT(c.nombre, ' ', c.apellido) AS nombre_completo,
     h.Numero_Habitacion,
@@ -78,4 +76,56 @@ FROM reserva_habitaciones r
 JOIN habitaciones h ON r.idx_habitacion = h.id_habitacion
 JOIN cliente_registrado c ON r.idx_cliente = c.id_cliente;
 
-SELECT * FROM v_habitaciones_ocupadas
+SELECT * FROM v_habitaciones_ocupadas;
+
+CREATE TABLE IF NOT EXISTS Cargos_Habitacion (
+    id_cargo INT PRIMARY KEY AUTO_INCREMENT,
+    idx_reserva INT NOT NULL,
+    idx_producto INT NOT NULL,
+    cantidad INT NOT NULL DEFAULT 1,
+    precio_en_el_momento DECIMAL(10, 2) NOT NULL,
+    fecha_cargo DATETIME NOT NULL,
+    FOREIGN KEY (idx_reserva) REFERENCES Reserva_habitaciones(id_reserva),
+    FOREIGN KEY (idx_producto) REFERENCES Productos_servicioHabitacion(ID_Producto)
+);
+
+ALTER TABLE Habitaciones
+MODIFY COLUMN Estado ENUM('Disponible', 'Ocupada', 'Reservada', 'Requiere Limpieza', 'Mantenimiento') DEFAULT 'Disponible';
+
+ALTER TABLE Reserva_habitaciones
+MODIFY COLUMN estado_Reserva ENUM('Confirmada', 'Pendiente', 'Activa', 'Finalizada', 'Cancelada', 'No Show') DEFAULT 'Pendiente';
+
+CREATE VIEW v_proximas_llegadas AS
+SELECT
+	CONCAT(c.nombre, ' ', c.apellido) AS nombre_completo,
+    h.Numero_Habitacion,
+    h.Estado,
+    r.fecha_entrada
+FROM reserva_habitaciones r
+JOIN habitaciones h ON r.idx_habitacion = h.id_habitacion
+JOIN cliente_registrado c ON r.idx_cliente = c.id_cliente
+WHERE
+h.estado = 'Reservada' AND r.estado_reserva = 'Confirmada'
+AND r.fecha_entrada BETWEEN CURDATE() AND DATE_ADD(CURDATE(), INTERVAL 1 DAY);
+
+CREATE VIEW v_limpíeza_requerida AS
+SELECT
+	CONCAT(c.nombre, ' ', c.apellido) AS nombre_completo,
+    h.Numero_Habitacion,
+    h.Estado,
+    r.fecha_salida
+FROM reserva_habitaciones r
+JOIN habitaciones h ON r.idx_habitacion = h.id_habitacion
+JOIN cliente_registrado c ON r.idx_cliente = c.id_cliente
+WHERE
+h.estado = 'Requiere Limpieza' AND r.estado_reserva = 'Activa'
+AND r.fecha_salida = CURDATE();
+
+CREATE VIEW v_productos_stock_bajo AS
+SELECT
+	p.nombre_producto,
+    p.stock,
+    p.Categoria
+FROM productos_serviciohabitacion p
+WHERE
+p.Stock <= 10;
