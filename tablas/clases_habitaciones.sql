@@ -5,6 +5,6 @@ CREATE TABLE IF NOT EXISTS Clases_Habitaciones (
   Capacidad_maxima INT NOT NULL,
   Piso INT NOT NULL,
   Comodidades TEXT DEFAULT NULL,
-  Precio_base DECIMAL(10, 2) NOT NULL)
+  Precio_base DECIMAL(10, 2) NOT NULL);
 
-  select * from Clases_Habitaciones;
+

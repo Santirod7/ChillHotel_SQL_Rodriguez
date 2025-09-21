@@ -5,4 +5,3 @@ CREATE TABLE Habitaciones (
     Estado VARCHAR(50) DEFAULT 'Disponible', 
     FOREIGN KEY (Id_Clase_Habitacion) REFERENCES Clases_Habitaciones(idClases_habitaciones)
 );
-select * from Habitaciones;

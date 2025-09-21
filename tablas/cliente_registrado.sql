@@ -6,6 +6,4 @@ CREATE TABLE IF NOT EXISTS Cliente_registrado (
     dni INT UNIQUE NOT NULL,
     edad INT UNSIGNED DEFAULT NULL,
     telefono VARCHAR(20) UNIQUE DEFAULT NULL,
-    nacionalidad VARCHAR(30) DEFAULT 'Argentina')
-
-select * from Cliente_registrado;
+    nacionalidad VARCHAR(30) DEFAULT 'Argentina');
