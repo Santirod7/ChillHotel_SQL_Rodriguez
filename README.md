@@ -25,7 +25,7 @@ El presente proyecto detalla la implementación de una base de datos relacional 
 
 ## Documentación detallada
 Te dejo el archivo por si quieres ver la documentación, en la cual esta más explicado toda la base de dataos, con cada una de las funcionalidades, relaciones, diagramas, tablas, etc 
-[DOCUMENTACIÓN CHILL HOTEL SQL](https://drive.google.com/file/d/16dHVdwG9dqE-Bd_nUvW-ZgyU9fYiltVW/view?usp=sharing)
+[DOCUMENTACIÓN CHILL HOTEL SQL](https://drive.google.com/file/d/1GBElCyxLc9EvvrkZBke43b2F5Rgho6mo/view?usp=sharing)
 
 ## ¿Listo para ejecutar la base da datos?
 
