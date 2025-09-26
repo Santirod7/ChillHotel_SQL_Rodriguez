@@ -1,3 +1,4 @@
+DELIMITER &&
 CREATE DEFINER=`root`@`localhost` PROCEDURE `sp_check_in`(IN p_id_reserva INT)
 BEGIN
     DECLARE var_id_habitacion INT;
@@ -19,4 +20,4 @@ BEGIN
     SIGNAL sqlstate '45000'
     SET message_text = 'ERROR: Hubo un problema al hacer el check_in, Controla si la hab. ya está reservada, sino contactese con el soporte técnico';
     END IF;
-END
+END&&
